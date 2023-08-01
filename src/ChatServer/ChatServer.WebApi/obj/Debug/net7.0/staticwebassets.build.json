@@ -1,0 +1,11 @@
+{
+  "Version": 1,
+  "Hash": "1zRM18lc2Gl4/8abhScsm9Km08kvSMEUivX/QmyIDNo=",
+  "Source": "ChatServer.WebApi",
+  "BasePath": "_content/ChatServer.WebApi",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [],
+  "Assets": []
+}
