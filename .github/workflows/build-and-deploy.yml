@@ -26,10 +26,8 @@ jobs:
       - name: Checkout the repo
         uses: actions/checkout@v2
 
-      - name: "Change directory to WebApi"
-        run: cd ChatServer.WebApi
-
       - name: Build container image
+        working-directory: ChatServer.WebApi
         run: docker build -t $(echo $REGISTRY)/$(echo $IMAGE_NAME):$(echo $GITHUB_SHA | head -c7) .
 
       - name: Install doctl
