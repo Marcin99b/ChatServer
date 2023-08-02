@@ -6,8 +6,10 @@ EXPOSE 80
 EXPOSE 443
 
 FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
-
-RUN dotnet restore "ChatServer.WebApi.csproj"
+COPY ["ChatServer.WebApi/ChatServer.WebApi.csproj", "ChatServer.WebApi/"]
+RUN dotnet restore "ChatServer.WebApi/ChatServer.WebApi.csproj"
+COPY . .
+WORKDIR "/src/ChatServer.WebApi"
 RUN dotnet build "ChatServer.WebApi.csproj" -c Release -o /app/build
 
 FROM build AS publish
