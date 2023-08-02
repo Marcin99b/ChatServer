@@ -2,6 +2,7 @@ FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build-env
 WORKDIR /app
 
 COPY . ./
+USER root
 RUN dotnet restore ChatServer.WebApi/ChatServer.WebApi.csproj
 RUN ChatServer.WebApi/ChatServer.WebApi.csproj -c Release -o out
 
