@@ -1,12 +1,21 @@
-FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build-env
+FROM mcr.microsoft.com/dotnet/runtime:7.0 AS base
 WORKDIR /app
 
-COPY . ./
-USER root
-RUN dotnet restore ChatServer.WebApi/ChatServer.WebApi.csproj
-RUN ChatServer.WebApi/ChatServer.WebApi.csproj -c Release -o out
+FROM mcr.microsoft.com/dotnet/aspnet:7.0 AS build
+WORKDIR /src
+COPY ["ChatServer.WebApi/ChatServer.WebApi.csproj", "ChatServer.WebApi/"]
+RUN dotnet restore "ChatServer.WebApi/ChatServer.WebApi.csproj"
+COPY . .
+WORKDIR "/src/ChatServer.WebApi"
+RUN dotnet build "ChatServer.WebApi.csproj" -c Release -o /app/build
 
-FROM mcr.microsoft.com/dotnet/aspnet:7.0
+FROM build AS publish
+RUN dotnet publish "ChatServer.WebApi.csproj" -c Release -o /app/publish
+
+FROM base AS final
+USER ContainerUser
 WORKDIR /app
-COPY --from=build /app/out .
-ENTRYPOINT ["dotnet", "ChatServer.WebApi.dll"]
+COPY --from=publish /app/publish .
+EXPOSE 80
+EXPOSE 443
+ENTRYPOINT ["dotnet", "ConsoleApp1.dll"]
