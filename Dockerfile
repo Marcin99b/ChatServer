@@ -18,4 +18,4 @@ WORKDIR /app
 COPY --from=publish /app/publish .
 EXPOSE 80
 EXPOSE 443
-ENTRYPOINT ["dotnet", "ConsoleApp1.dll"]
+ENTRYPOINT ["dotnet", "ChatServer.WebApi.dll"]
