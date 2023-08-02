@@ -553,11 +553,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\marci\\Desktop\\webrtc\\ChatServer\\src\\ChatServer\\ChatServer.WebApi\\ChatServer.WebApi.csproj",
+      "projectUniqueName": "C:\\Users\\marci\\Desktop\\webrtc\\ChatServer\\ChatServer.WebApi\\ChatServer.WebApi.csproj",
       "projectName": "ChatServer.WebApi",
-      "projectPath": "C:\\Users\\marci\\Desktop\\webrtc\\ChatServer\\src\\ChatServer\\ChatServer.WebApi\\ChatServer.WebApi.csproj",
+      "projectPath": "C:\\Users\\marci\\Desktop\\webrtc\\ChatServer\\ChatServer.WebApi\\ChatServer.WebApi.csproj",
       "packagesPath": "C:\\Users\\marci\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\marci\\Desktop\\webrtc\\ChatServer\\src\\ChatServer\\ChatServer.WebApi\\obj\\",
+      "outputPath": "C:\\Users\\marci\\Desktop\\webrtc\\ChatServer\\ChatServer.WebApi\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\marci\\AppData\\Roaming\\NuGet\\NuGet.Config",

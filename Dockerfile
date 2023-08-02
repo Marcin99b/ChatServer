@@ -17,5 +17,4 @@ USER ContainerUser
 WORKDIR /app
 COPY --from=publish /app/publish .
 EXPOSE 80
-EXPOSE 443
 ENTRYPOINT ["dotnet", "ChatServer.WebApi.dll"]
