@@ -15,8 +15,8 @@ on:
         required: true
 #2
 env:
-  REGISTRY: "your-digitalocean-registry-container-url"
-  IMAGE_NAME: "your-docker-image-name"
+  REGISTRY: "registry.digitalocean.com/voicechat-test"
+  IMAGE_NAME: "voicechat-test"
 
 #3
 jobs:
