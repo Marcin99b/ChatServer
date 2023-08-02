@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "ou6WcX3T/L7tS/ZPxkj0T55kpcFBWreTW4/FPGIMfA+32iJ7FHiI1xH0GmXzCWg0uCCvUpbOw/R5bo3EwnZ6zg==",
+  "dgSpecHash": "Zy/zuE4a6HYRnIyLH8oQFNMFkknI2sN8dVGAA5ra79snAeOtAzqUAmOI/f/2zYp3B6O8+guh4Sri59eol6l/0w==",
   "success": true,
-  "projectFilePath": "C:\\Users\\marci\\Desktop\\webrtc\\server\\src\\ChatServer\\ChatServer.WebApi\\ChatServer.WebApi.csproj",
+  "projectFilePath": "C:\\Users\\marci\\Desktop\\webrtc\\ChatServer\\src\\ChatServer\\ChatServer.WebApi\\ChatServer.WebApi.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\marci\\.nuget\\packages\\microsoft.aspnetcore.openapi\\7.0.0\\microsoft.aspnetcore.openapi.7.0.0.nupkg.sha512",
     "C:\\Users\\marci\\.nuget\\packages\\microsoft.extensions.apidescription.server\\6.0.5\\microsoft.extensions.apidescription.server.6.0.5.nupkg.sha512",
