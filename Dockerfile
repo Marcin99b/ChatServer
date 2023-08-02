@@ -1,7 +1,7 @@
-FROM mcr.microsoft.com/dotnet/runtime:7.0 AS base
+FROM mcr.microsoft.com/dotnet/aspnet:7.0 AS base
 WORKDIR /app
 
-FROM mcr.microsoft.com/dotnet/aspnet:7.0 AS build
+FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
 WORKDIR /src
 COPY ["ChatServer.WebApi/ChatServer.WebApi.csproj", "ChatServer.WebApi/"]
 RUN dotnet restore "ChatServer.WebApi/ChatServer.WebApi.csproj"
