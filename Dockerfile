@@ -1,21 +1,12 @@
-#See https://aka.ms/containerfastmode to understand how Visual Studio uses this Dockerfile to build your images for faster debugging.
-
 FROM mcr.microsoft.com/dotnet/aspnet:7.0 AS base
 WORKDIR /app
+
+COPY . ./
+RUN ChatServer.WebApi/ChatServer.WebApi.csproj -c Release -o out
+
+FROM mcr.microsoft.com/dotnet/aspnet:7.0
+WORKDIR /app
+COPY --from=build /app/out .
 EXPOSE 80
 EXPOSE 443
-
-FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
-COPY ["ChatServer.WebApi/ChatServer.WebApi.csproj", "ChatServer.WebApi/"]
-RUN dotnet restore "ChatServer.WebApi/ChatServer.WebApi.csproj"
-COPY . .
-WORKDIR "/src/ChatServer.WebApi"
-RUN dotnet build "ChatServer.WebApi.csproj" -c Release -o /app/build
-
-FROM build AS publish
-RUN dotnet publish "ChatServer.WebApi.csproj" -c Release -o /app/publish /p:UseAppHost=false
-
-FROM base AS final
-WORKDIR /app
-COPY --from=publish /app/publish .
 ENTRYPOINT ["dotnet", "ChatServer.WebApi.dll"]
