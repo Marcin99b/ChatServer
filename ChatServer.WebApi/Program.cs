@@ -97,12 +97,12 @@ class ChatHub : Hub
 {
     public async Task AnswerAddedToRoom(Guid roomId, SdpData answer)
     {
-        await Clients.All.SendAsync("AnswerAddedToRoom", roomId, answer);
+        await Clients.Others.SendAsync("AnswerAddedToRoom", roomId, answer);
     }
 
     public async Task CandidateAddedToRoom(Guid roomId, CandidateItem candidate)
     {
-        await Clients.All.SendAsync("CandidateAddedToRoom", roomId, candidate);
+        await Clients.Others.SendAsync("CandidateAddedToRoom", roomId, candidate);
     }
 }
 
