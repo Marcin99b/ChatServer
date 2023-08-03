@@ -38,10 +38,17 @@ app.MapPost("Rooms/CreateOffer", async ([FromBody] CreateOfferRequest request) =
     return new CreateOfferResponse(room.Id);
 });
 
-app.MapPost("Rooms/{id}/AddCandidate", async ([FromRoute] Guid id, [FromBody] AddCandidateRequest request, ChatHub hub) =>
+app.MapPost("Rooms/{id}/AddOfferCandidate", async ([FromRoute] Guid id, [FromBody] AddCandidateRequest request, ChatHub hub) =>
 {
     var room = Db.Rooms.First(x => x.Id == id);
-    room.Candidates.Add(new Candidate(request.Candidate));
+    room.OfferCandidates.Add(new Candidate(request.Candidate));
+    await hub.CandidateAddedToRoom(room.Id, request.Candidate);
+});
+
+app.MapPost("Rooms/{id}/AddAnswerCandidate", async ([FromRoute] Guid id, [FromBody] AddCandidateRequest request, ChatHub hub) =>
+{
+    var room = Db.Rooms.First(x => x.Id == id);
+    room.AnswerCandidates.Add(new Candidate(request.Candidate));
     await hub.CandidateAddedToRoom(room.Id, request.Candidate);
 });
 
@@ -90,6 +97,11 @@ app.MapPost("WebRtc/GetIceServers", async () =>
     return new GetIceServersResponse(data!.ice_servers!);
 });
 
+app.MapPost("Rooms/GetRoom/{id}", async ([FromRoute] Guid id) => 
+{
+    await Task.CompletedTask;
+    return Db.Rooms.First(x => x.Id == id);
+});
 
 app.Run();
 
@@ -127,7 +139,8 @@ record Candidate(CandidateItem Data) : Entity;
 
 record Room(SdpData Offer) : Entity
 {
-    public List<Candidate> Candidates { get; } = new();
+    public List<Candidate> OfferCandidates { get; } = new();
+    public List<Candidate> AnswerCandidates { get; } = new();
     public SdpData? Answer { get; set; }
 }
 
