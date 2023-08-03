@@ -58,6 +58,19 @@ app.MapPost("Rooms/{id}/GetOffer", async ([FromRoute] Guid id) =>
     return new GetOfferResponse(room.Offer);
 });
 
+app.MapPost("Rooms/GetRooms", async () =>
+{
+    var roomIds = Db.Rooms.Select(x => x.Id).ToArray();
+    await Task.CompletedTask;
+    return new GetRoomsResponse(roomIds);
+});
+
+app.MapPost("Rooms/{id}/Delete", async ([FromRoute] Guid id) =>
+{
+    Db.Rooms.Remove(Db.Rooms.First(x => x.Id == id));
+    await Task.CompletedTask;
+});
+
 
 app.Run();
 
@@ -79,6 +92,7 @@ record CreateOfferResponse(Guid RoomId);
 record AddCandidateRequest(CandidateItem Candidate);
 record AddAnswerRequest(SdpData Answer);
 record GetOfferResponse(SdpData offer);
+record GetRoomsResponse(Guid[] Ids);
 
 static class Db
 {
