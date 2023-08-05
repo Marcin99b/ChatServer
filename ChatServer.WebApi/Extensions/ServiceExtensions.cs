@@ -12,6 +12,8 @@ namespace ChatServer.WebApi.Extensions
     {
         public static IServiceCollection SetupAuth(this IServiceCollection services, ConfigurationManager config)
         {
+
+
             services.AddOptions<AuthOptions>().Bind(config.GetSection("Auth")).ValidateDataAnnotations();
             services.AddOptions<CookieOptions>().Bind(config.GetSection("Auth:Cookie")).ValidateDataAnnotations();
 
@@ -103,8 +105,8 @@ namespace ChatServer.WebApi.Extensions
                 };
             });
 
-            services.AddSingleton<IAuthManager, AuthManager>();
 
+            services.AddSingleton<IAuthManager, AuthManager>();
             return services;
         }
     }

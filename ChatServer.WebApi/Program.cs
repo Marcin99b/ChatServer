@@ -30,11 +30,11 @@ if (app.Environment.IsDevelopment())
 app.UseCors(x => x
     .AllowAnyMethod()
     .AllowAnyHeader()
-    .SetIsOriginAllowed(origin => true)
-    .AllowCredentials());
+    .AllowCredentials()
+    .WithOrigins("http://localhost:3000", "https://thunderous-biscotti-4a2236.netlify.app/"));
 
 app.UseHttpsRedirection();
-
+app.UseAuthorization();
 app.Use(async (ctx, next) =>
 {
     if (ctx.Request.Headers.ContainsKey(AuthConsts.AUTHORIZATION_HEADER))

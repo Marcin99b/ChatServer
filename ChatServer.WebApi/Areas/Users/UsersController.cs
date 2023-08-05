@@ -48,16 +48,8 @@ namespace ChatServer.WebApi.Areas.Users
         [AllowAnonymous]
         public async Task<LoginResponse> Login([FromBody] LoginRequest request)
         {
-            try
-            {
-            var thisUser = this.User.GetUserId();
-
-            }
-            catch (Exception ex)
-            {
-            }
             var user = this.repository.Users.First(x => x.Username == request.Username);
-            var token = this.authManager.CreateToken(user.Id).AccessToken;
+            var token = this.authManager.CreateToken(user.Id, "user").AccessToken;
 
             this.AddCookie(AuthConsts.ACCESS_TOKEN_COOKIE, token);
 
@@ -84,6 +76,14 @@ namespace ChatServer.WebApi.Areas.Users
         {
             var user = this.repository.Users.First(x => x.Id == request.UserId);
             return new GetUserResponse(user);
+        }
+
+        [HttpPost]
+        public async Task<GetCurrentUserResponse> GetCurrentUser([FromBody] GetCurrentUserRequest request)
+        {
+            var id = this.User.GetUserId();
+            var user = this.repository.Users.First(x => x.Id == id);
+            return new GetCurrentUserResponse(user);
         }
 
         private void AddCookie(string key, string value) => this.Response.Cookies.Append(key, value, this.cookieOptions);

@@ -15,4 +15,7 @@ namespace ChatServer.WebApi.Areas.Users
 
     public record GetUserRequest(Guid UserId);
     public record GetUserResponse(User User);
+
+    public record GetCurrentUserRequest();
+    public record GetCurrentUserResponse(User User);
 }
