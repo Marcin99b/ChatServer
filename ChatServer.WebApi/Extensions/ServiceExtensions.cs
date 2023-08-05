@@ -15,6 +15,7 @@ namespace ChatServer.WebApi.Extensions
             services.AddOptions<AuthOptions>().Bind(config.GetSection("Auth")).ValidateDataAnnotations();
             services.AddOptions<CookieOptions>().Bind(config.GetSection("Auth:Cookie")).ValidateDataAnnotations();
 
+            services.AddSingleton<CacheService>();
             services.AddSingleton<IUsersSessionsStorage, UsersSessionsStorage>();
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddSingleton<IAuthorizationHandler, SessionCheckHandler>();

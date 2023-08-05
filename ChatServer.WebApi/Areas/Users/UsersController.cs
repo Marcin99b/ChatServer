@@ -2,6 +2,7 @@
 using ChatServer.WebApi.Auth;
 using ChatServer.WebApi.Consts;
 using ChatServer.WebApi.Extensions;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 
@@ -30,9 +31,10 @@ namespace ChatServer.WebApi.Areas.Users
         }
 
         [HttpPost]
+        [AllowAnonymous]
         public async Task<RegisterResponse> Register([FromBody] RegisterRequest request)
         {
-            var user = this.repository.Users.First(x => x.Username == request.Username);
+            var user = this.repository.Users.FirstOrDefault(x => x.Username == request.Username);
             if(user != null)
             {
                 throw new ArgumentException("Username exist");
@@ -43,8 +45,17 @@ namespace ChatServer.WebApi.Areas.Users
         }
 
         [HttpPost]
+        [AllowAnonymous]
         public async Task<LoginResponse> Login([FromBody] LoginRequest request)
         {
+            try
+            {
+            var thisUser = this.User.GetUserId();
+
+            }
+            catch (Exception ex)
+            {
+            }
             var user = this.repository.Users.First(x => x.Username == request.Username);
             var token = this.authManager.CreateToken(user.Id).AccessToken;
 

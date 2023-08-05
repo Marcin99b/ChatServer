@@ -3,9 +3,12 @@ using ChatServer.WebApi.Consts;
 using ChatServer.WebApi.Hubs;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authentication;
+using ChatServer.WebApi.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
+var config = builder.Configuration;
+builder.Services.SetupAuth(config);
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 builder.Services.AddSingleton<Repository>();
 builder.Services.AddSignalR();
