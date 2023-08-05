@@ -67,8 +67,11 @@ namespace ChatServer.WebApi.Areas.Users
         public async Task<GetUsersListResponse> GetUsersList([FromBody] GetUsersListRequest request)
         {
             var currentUser = this.User.GetUserId();
-            var list = repository.Users.Where(x => x.Id != currentUser).ToList();
-            return new GetUsersListResponse(list);
+            var users = repository.Users
+                .Where(x => x.Id != currentUser)
+                .Select(x => new UserRoomDetails(x, repository.Connections.Any(c => c.UserId == x.Id)))
+                .ToList();
+            return new GetUsersListResponse(users);
         }
 
         [HttpPost]
