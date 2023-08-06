@@ -31,7 +31,7 @@ app.UseCors(x => x
     .AllowAnyMethod()
     .AllowAnyHeader()
     .AllowCredentials()
-    .WithOrigins("http://localhost:3000", "https://thunderous-biscotti-4a2236.netlify.app/"));
+    .WithOrigins("http://localhost:3000", "https://thunderous-biscotti-4a2236.netlify.app", "https://main--thunderous-biscotti-4a2236.netlify.app"));
 
 app.UseHttpsRedirection();
 app.UseAuthorization();
