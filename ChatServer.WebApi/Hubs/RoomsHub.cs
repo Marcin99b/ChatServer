@@ -40,7 +40,7 @@ namespace ChatServer.WebApi.Hubs
             {
                 return;
             }
-            await Clients.User(receiverConnectionId).SendAsync("WaitingForCallAccept", callingUser);
+            await Clients.User(receiverUser.ToString()).SendAsync("WaitingForCallAccept", callingUser);
         }
 
         public async Task CallPropositionAccepted(Guid createdRoomId, Guid callingUser)
@@ -52,27 +52,25 @@ namespace ChatServer.WebApi.Hubs
             {
                 return;
             }
-            await Clients.User(receiverConnectionId).SendAsync("CallPropositionAccepted", createdRoomId);
+            await Clients.User(callingUser.ToString()).SendAsync("CallPropositionAccepted", createdRoomId);
         }
 
         public async Task CandidateAddedToRoom(Guid roomId, Candidate candidate)
         {
             var room = repository.Rooms.First(x => x.Id == roomId);
-            var creatorConnectionId = repository.Connections
-                .First(x => x.UserId == room.CallingUserId)
-                .SignalRConnectionId;
+            var creatorConnection = repository.Connections
+                .First(x => x.UserId == room.CallingUserId);
 
-            await Clients.User(creatorConnectionId).SendAsync("AnswerCandidateAddedToRoom", candidate);
+            await Clients.User(creatorConnection.UserId.ToString()).SendAsync("AnswerCandidateAddedToRoom", candidate);
         }
 
         public async Task AnswerAddedToRoom(Guid roomId, SdpData answer)
         {
             var room = repository.Rooms.First(x => x.Id == roomId);
-            var creatorConnectionId = repository.Connections
-                .First(x => x.UserId == room.CallingUserId)
-                .SignalRConnectionId;
+            var creatorConnection = repository.Connections
+                .First(x => x.UserId == room.CallingUserId);
 
-            await Clients.User(creatorConnectionId).SendAsync("AnswerAddedToRoom", answer);
+            await Clients.User(creatorConnection.UserId.ToString()).SendAsync("AnswerAddedToRoom", answer);
         }
     }
 }
