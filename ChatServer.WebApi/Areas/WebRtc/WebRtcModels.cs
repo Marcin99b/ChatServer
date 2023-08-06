@@ -37,12 +37,12 @@ namespace ChatServer.WebApi.Areas.WebRtc
     public record GetIceServersRequest(Guid RoomId);
     public record GetIceServersResponse(Ice_Servers[] IceServers);
 
-    public record CreateRoomRequest(SdpData Offer);
+    public record CreateRoomRequest(Guid RoomId, SdpData Offer);
     public record CreateRoomResponse;
 
-    public record AddCandidateRequest(Candidate Candidate);
+    public record AddCandidateRequest(Guid WebRtcRoomId, Candidate Candidate);
     public record AddCandidateResponse;
 
-    public record SetAnswerRequest(SdpData Answer);
+    public record SetAnswerRequest(Guid WebRtcRoomId, SdpData Answer);
     public record SetAnswerResponse;
 }
