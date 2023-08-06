@@ -17,7 +17,7 @@ namespace ChatServer.WebApi.Areas.Rooms
         }
 
         [HttpPost]
-        public async Task<ProposeCallResponse> ProposeCall(ProposeCallRequest request)
+        public async Task<ProposeCallResponse> ProposeCall([FromBody] ProposeCallRequest request)
         {
             var currentUserId = this.User.GetUserId();
 
@@ -35,20 +35,34 @@ namespace ChatServer.WebApi.Areas.Rooms
         }
 
         [HttpPost]
-        public async Task<AcceptCallResponse> AcceptCall(AcceptCallRequest request)
+        public async Task<AcceptCallResponse> AcceptCall([FromBody]AcceptCallRequest request)
         {
-            var currentUserId = this.User.GetUserId();
+            var receivingUser = this.User.GetUserId();
             var callingUserId = request.CallingUserId;
 
-            var proposition = this.repository.CallPropositions.Single(x => x.CallingUserId == callingUserId && x.ReceivingUserId == currentUserId);
+            var proposition = this.repository.CallPropositions.Single(x => x.CallingUserId == callingUserId && x.ReceivingUserId == receivingUser);
 
             proposition.IsAccepted = true;
 
-            var room = new Room(callingUserId, request.CallingUserId);
+            var room = new Room(request.CallingUserId, receivingUser);
             this.repository.Rooms.Add(room);
 
             await roomsHub.CallPropositionAccepted(room.Id, request.CallingUserId);
+            this.repository.CallPropositions.Remove(proposition);
             return new AcceptCallResponse(room.Id);
+        }
+
+        [HttpPost]
+        public async Task<GetRoomResponse> GetRoom([FromBody] GetRoomRequest request)
+        {
+            var userId = this.User.GetUserId();
+            var room = this.repository.Rooms.First(x => x.Id == request.RoomId);
+            if (userId != room.CallingUserId && userId != room.ReceivingUserId)
+            {
+                throw new Exception("User must be in room");
+            }
+            await Task.CompletedTask;
+            return new GetRoomResponse(room);
         }
     }
 }

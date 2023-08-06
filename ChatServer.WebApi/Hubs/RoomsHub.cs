@@ -55,22 +55,23 @@ namespace ChatServer.WebApi.Hubs
             await Clients.User(callingUser.ToString()).SendAsync("CallPropositionAccepted", createdRoomId);
         }
 
+        public async Task RoomConfiguredByReceiver(WebRtcRoom rtcRoom, Guid callingUserId)
+        {
+            await Clients.User(callingUserId.ToString()).SendAsync("RoomConfiguredByReceiver", rtcRoom);
+        }
+
+        public async Task RoomConfiguredByCaller(WebRtcRoom rtcRoom, Guid receivingUserId)
+        {
+            await Clients.User(receivingUserId.ToString()).SendAsync("RoomConfiguredByCaller", rtcRoom);
+        }
+
         public async Task CandidateAddedToRoom(Guid roomId, Candidate candidate)
         {
             var room = repository.Rooms.First(x => x.Id == roomId);
-            var creatorConnection = repository.Connections
-                .First(x => x.UserId == room.CallingUserId);
+            var receiver = repository.Connections
+                .First(x => x.UserId == room.ReceivingUserId);
 
-            await Clients.User(creatorConnection.UserId.ToString()).SendAsync("AnswerCandidateAddedToRoom", candidate);
-        }
-
-        public async Task AnswerAddedToRoom(Guid roomId, SdpData answer)
-        {
-            var room = repository.Rooms.First(x => x.Id == roomId);
-            var creatorConnection = repository.Connections
-                .First(x => x.UserId == room.CallingUserId);
-
-            await Clients.User(creatorConnection.UserId.ToString()).SendAsync("AnswerAddedToRoom", answer);
+            await Clients.User(receiver.UserId.ToString()).SendAsync("AnswerCandidateAddedToRoom", candidate);
         }
     }
 }

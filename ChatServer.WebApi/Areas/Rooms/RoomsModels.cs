@@ -13,4 +13,7 @@ namespace ChatServer.WebApi.Areas.Rooms
 
     public record AcceptCallRequest(Guid CallingUserId);
     public record AcceptCallResponse(Guid CreatedRoomId);
+
+    public record GetRoomRequest(Guid RoomId);
+    public record GetRoomResponse(Room room);
 }
