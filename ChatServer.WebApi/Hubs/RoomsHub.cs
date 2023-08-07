@@ -19,23 +19,34 @@ namespace ChatServer.WebApi.Hubs
         public override async Task OnConnectedAsync()
         {
             await base.OnConnectedAsync();
-
-            var userId = Guid.Parse(Context.UserIdentifier!);
+            if(Context.User == null)
+            {
+                return;
+            }
+            var userId = Context.User.GetUserId();
+            var foundConnections = repository.Connections.Where(c => c.UserId == userId);
+            foreach( var connection in foundConnections) 
+            {
+                repository.Connections.Remove(connection);
+            }
             repository.Connections.Add(new UserConnection(Context.ConnectionId, userId));
         }
 
         public override async Task OnDisconnectedAsync(Exception? exception)
         {
             await base.OnDisconnectedAsync(exception);
-
-            var found = repository.Connections.First(x => x.SignalRConnectionId == Context.ConnectionId);
-            repository.Connections.Remove(found);
             if(Context.User == null)
             {
                 return;
             }
 
             var userId = Context.User.GetUserId();
+            var foundConnections = repository.Connections.Where(c => c.UserId == userId);
+            foreach (var connection in foundConnections)
+            {
+                repository.Connections.Remove(connection);
+            }
+
             var roomFound = repository.Rooms.FirstOrDefault(x => x.ReceivingUserId == userId || x.CallingUserId == userId);
             if(roomFound == null)
             {
