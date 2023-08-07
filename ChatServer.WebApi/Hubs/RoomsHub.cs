@@ -1,5 +1,6 @@
 ﻿using ChatServer.WebApi.Areas.Commons;
 using ChatServer.WebApi.Areas.WebRtc;
+using ChatServer.WebApi.Extensions;
 using Microsoft.AspNetCore.SignalR;
 
 namespace ChatServer.WebApi.Hubs
@@ -29,6 +30,23 @@ namespace ChatServer.WebApi.Hubs
 
             var found = repository.Connections.First(x => x.SignalRConnectionId == Context.ConnectionId);
             repository.Connections.Remove(found);
+            if(Context.User == null)
+            {
+                return;
+            }
+
+            var userId = Context.User.GetUserId();
+            var roomFound = repository.Rooms.FirstOrDefault(x => x.ReceivingUserId == userId || x.CallingUserId == userId);
+            if(roomFound == null)
+            {
+                return;
+            }
+            var rtcRoom = repository.WebRtcRooms.FirstOrDefault(x => x.RoomId == roomFound.Id);
+            if(rtcRoom != null)
+            {
+                repository.WebRtcRooms.Remove(rtcRoom);
+            }
+            repository.Rooms.Remove(roomFound);
         }
 
         public async Task WaitingForCallAccept(Guid callingUser, Guid receiverUser)
