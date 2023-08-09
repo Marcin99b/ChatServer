@@ -94,12 +94,12 @@ namespace ChatServer.WebApi.Areas.WebRtc
             var room = this.repository.Rooms.First(x => x.Id == rtcRoom.RoomId);
             if(room.CallingUserId == userId)
             {
-                rtcRoom.OfferCandidates.Add(request.Candidate);
+                rtcRoom.AnswerCandidates.Add(request.Candidate);
                 await hub.AnswerCandidateAddedToRoom(room.Id, request.Candidate);
             }
             else if(room.ReceivingUserId == userId)
             {
-                rtcRoom.AnswerCandidates.Add(request.Candidate);
+                rtcRoom.OfferCandidates.Add(request.Candidate);
                 await hub.OfferCandidateAddedToRoom(room.Id, request.Candidate);
             }
             else
@@ -124,7 +124,6 @@ namespace ChatServer.WebApi.Areas.WebRtc
             }
 
             rtcRoom.Answer = request.Answer;
-            await hub.RoomConfiguredByCaller(rtcRoom, room.ReceivingUserId);
             return new SetAnswerResponse();
         }
     }
