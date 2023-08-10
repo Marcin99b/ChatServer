@@ -12,11 +12,16 @@ namespace ChatServer.WebApi.Areas.WebRtc
         string sdpMid,
         string usernameFragment);
 
-    public record WebRtcRoom(Guid RoomId, SdpData Offer) : Entity
+    public record WebRtcRoom(Guid RoomId, SdpData Offer, Candidate[] OfferCandidates) : Entity
     {
-        public List<Candidate> OfferCandidates { get; } = new();
-        public List<Candidate> AnswerCandidates { get; } = new();
-        public SdpData? Answer { get; set; }
+        public Candidate[]? AnswerCandidates { get; private set; }
+        public SdpData? Answer { get; private set; }
+
+        public void SetAnswer(SdpData answer, Candidate[] answerCandidates)
+        {
+            Answer = answer;
+            AnswerCandidates = answerCandidates;
+        }
     }
 
     public record TwillioIceServersResponse(
@@ -37,13 +42,13 @@ namespace ChatServer.WebApi.Areas.WebRtc
     public record GetIceServersRequest(Guid RoomId);
     public record GetIceServersResponse(Ice_Servers[] IceServers);
 
-    public record CreateRoomRequest(Guid RoomId, SdpData Offer);
+    public record CreateRoomRequest(Guid RoomId, SdpData Offer, Candidate[] Candidates);
     public record CreateRoomResponse(WebRtcRoom RtcRoom);
 
     public record AddCandidateRequest(Guid WebRtcRoomId, Candidate Candidate);
     public record AddCandidateResponse;
 
-    public record SetAnswerRequest(Guid WebRtcRoomId, SdpData Answer);
+    public record SetAnswerRequest(Guid RoomId, SdpData Answer, Candidate[] Candidates);
     public record SetAnswerResponse;
 
     public record NotifyCallerAboutRoomConfiguredRequest(Guid RoomId);

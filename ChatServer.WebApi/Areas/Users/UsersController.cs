@@ -41,6 +41,7 @@ namespace ChatServer.WebApi.Areas.Users
             }
             var newUser = new User(request.Username.Trim());
             this.repository.Users.Add(newUser);
+            await Task.CompletedTask;
             return new RegisterResponse();
         }
 
@@ -59,7 +60,7 @@ namespace ChatServer.WebApi.Areas.Users
 
             var session = new UserSession(user.Id, token, now, ip, userAgent);
             usersSessionsStorage.Add(session);
-
+            await Task.CompletedTask;
             return new LoginResponse();
         }
 
@@ -71,6 +72,7 @@ namespace ChatServer.WebApi.Areas.Users
                 .Where(x => x.Id != currentUser)
                 .Select(x => new UserRoomDetails(x, repository.Connections.Any(c => c.UserId == x.Id)))
                 .ToList();
+            await Task.CompletedTask;
             return new GetUsersListResponse(users);
         }
 
@@ -78,6 +80,7 @@ namespace ChatServer.WebApi.Areas.Users
         public async Task<GetUserResponse> GetUser([FromBody] GetUserRequest request)
         {
             var user = this.repository.Users.First(x => x.Id == request.UserId);
+            await Task.CompletedTask;
             return new GetUserResponse(user);
         }
 
@@ -86,6 +89,7 @@ namespace ChatServer.WebApi.Areas.Users
         {
             var id = this.User.GetUserId();
             var user = this.repository.Users.First(x => x.Id == id);
+            await Task.CompletedTask;
             return new GetCurrentUserResponse(user);
         }
 

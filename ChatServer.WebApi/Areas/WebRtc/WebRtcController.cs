@@ -52,62 +52,10 @@ namespace ChatServer.WebApi.Areas.WebRtc
             {
                 throw new Exception("Room must be created by receiving user");
             }
-            var rtcRoom = new WebRtcRoom(room.Id, request.Offer);
+            var rtcRoom = new WebRtcRoom(room.Id, request.Offer, request.Candidates);
             this.repository.WebRtcRooms.Add(rtcRoom);
-            return new CreateRoomResponse(rtcRoom);
-        }
-
-        [HttpPost]
-        public async Task<NotifyCallerAboutRoomConfiguredResponse> NotifyCallerAboutRoomConfigured([FromBody] NotifyCallerAboutRoomConfiguredRequest request)
-        {
-            var userId = this.User.GetUserId();
-            var room = repository.Rooms.First(x => x.Id == request.RoomId);
-            if(room.ReceivingUserId != userId)
-            {
-                throw new ArgumentException("User must be receiver in room");
-            }
-            var rtcRoom = repository.WebRtcRooms.First(x => x.RoomId == room.Id);
             await hub.RoomConfiguredByReceiver(rtcRoom, room.CallingUserId);
-            return new NotifyCallerAboutRoomConfiguredResponse();
-        }
-
-        [HttpPost]
-        public async Task<NotifyReceiverAboutRoomConfiguredResponse> NotifyReceiverAboutRoomConfigured([FromBody] NotifyReceiverAboutRoomConfiguredRequest request)
-        {
-            var userId = this.User.GetUserId();
-            var room = repository.Rooms.First(x => x.Id == request.RoomId);
-            if (room.CallingUserId != userId)
-            {
-                throw new ArgumentException("User must be caller in room");
-            }
-            var rtcRoom = repository.WebRtcRooms.First(x => x.RoomId == room.Id);
-            await hub.RoomConfiguredByCaller(rtcRoom, room.ReceivingUserId);
-            return new NotifyReceiverAboutRoomConfiguredResponse();
-        }
-
-        [HttpPost]
-        public async Task<AddCandidateResponse> AddCandidate([FromBody] AddCandidateRequest request)
-        {
-            var userId = this.User.GetUserId();
-
-            var rtcRoom = this.repository.WebRtcRooms.First(x => x.Id == request.WebRtcRoomId);
-            var room = this.repository.Rooms.First(x => x.Id == rtcRoom.RoomId);
-            if(room.CallingUserId == userId)
-            {
-                rtcRoom.AnswerCandidates.Add(request.Candidate);
-                await hub.AnswerCandidateAddedToRoom(room.Id, request.Candidate);
-            }
-            else if(room.ReceivingUserId == userId)
-            {
-                rtcRoom.OfferCandidates.Add(request.Candidate);
-                await hub.OfferCandidateAddedToRoom(room.Id, request.Candidate);
-            }
-            else
-            {
-                throw new ArgumentException("User is not in room");
-            }
-            await Task.CompletedTask;
-            return new AddCandidateResponse();
+            return new CreateRoomResponse(rtcRoom);
         }
 
         [HttpPost]
@@ -115,15 +63,16 @@ namespace ChatServer.WebApi.Areas.WebRtc
         {
             var userId = this.User.GetUserId();
 
-            var rtcRoom = this.repository.WebRtcRooms.First(x => x.Id == request.WebRtcRoomId);
-            var room = this.repository.Rooms.First(x => x.Id == rtcRoom.RoomId);
+            var room = this.repository.Rooms.First(x => x.Id == request.RoomId);
+            var rtcRoom = this.repository.WebRtcRooms.First(x => x.RoomId == room.Id);
 
             if (userId != room.CallingUserId)
             {
                 throw new Exception("User must be caller to set answer");
             }
 
-            rtcRoom.Answer = request.Answer;
+            rtcRoom.SetAnswer(request.Answer, request.Candidates);
+            await hub.RoomConfiguredByCaller(rtcRoom, room.ReceivingUserId);
             return new SetAnswerResponse();
         }
     }

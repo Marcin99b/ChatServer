@@ -93,23 +93,5 @@ namespace ChatServer.WebApi.Hubs
         {
             await Clients.User(receivingUserId.ToString()).SendAsync("RoomConfiguredByCaller", rtcRoom);
         }
-
-        public async Task OfferCandidateAddedToRoom(Guid roomId, Candidate candidate)
-        {
-            var room = repository.Rooms.First(x => x.Id == roomId);
-            var caller = repository.Connections
-                .First(x => x.UserId == room.CallingUserId);
-
-            await Clients.User(caller.UserId.ToString()).SendAsync("CandidateAddedToRoom", candidate);
-        }
-
-        public async Task AnswerCandidateAddedToRoom(Guid roomId, Candidate candidate)
-        {
-            var room = repository.Rooms.First(x => x.Id == roomId);
-            var receiver = repository.Connections
-                .First(x => x.UserId == room.ReceivingUserId);
-
-            await Clients.User(receiver.UserId.ToString()).SendAsync("CandidateAddedToRoom", candidate);
-        }
     }
 }
