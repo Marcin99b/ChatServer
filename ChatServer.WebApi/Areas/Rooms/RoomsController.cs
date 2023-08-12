@@ -10,13 +10,11 @@ namespace ChatServer.WebApi.Areas.Rooms
     {
         private readonly Repository repository;
         private readonly RoomsHub roomsHub;
-        private readonly RoomsService roomsService;
 
-        public RoomsController(Repository repository, RoomsHub roomsHub, RoomsService roomsService)
+        public RoomsController(Repository repository, RoomsHub roomsHub)
         {
             this.repository = repository;
             this.roomsHub = roomsHub;
-            this.roomsService = roomsService;
         }
 
         [HttpPost]
