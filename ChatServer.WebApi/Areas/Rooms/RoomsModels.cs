@@ -16,4 +16,7 @@ namespace ChatServer.WebApi.Areas.Rooms
 
     public record GetRoomRequest(Guid RoomId);
     public record GetRoomResponse(Room room);
+
+    public record LeaveRequest(Guid RoomId);
+    public record LeaveResponse();
 }

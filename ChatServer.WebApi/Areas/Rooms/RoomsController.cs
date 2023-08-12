@@ -1,4 +1,5 @@
 ﻿using ChatServer.WebApi.Areas.Commons;
+using ChatServer.WebApi.Areas.Users;
 using ChatServer.WebApi.Extensions;
 using ChatServer.WebApi.Hubs;
 using Microsoft.AspNetCore.Mvc;
@@ -9,11 +10,13 @@ namespace ChatServer.WebApi.Areas.Rooms
     {
         private readonly Repository repository;
         private readonly RoomsHub roomsHub;
+        private readonly RoomsService roomsService;
 
-        public RoomsController(Repository repository, RoomsHub roomsHub)
+        public RoomsController(Repository repository, RoomsHub roomsHub, RoomsService roomsService)
         {
             this.repository = repository;
             this.roomsHub = roomsHub;
+            this.roomsService = roomsService;
         }
 
         [HttpPost]
@@ -63,6 +66,19 @@ namespace ChatServer.WebApi.Areas.Rooms
             }
             await Task.CompletedTask;
             return new GetRoomResponse(room);
+        }
+
+        [HttpPost]
+        public async Task<LeaveResponse> Leave([FromBody] LeaveRequest request)
+        {
+            var userId = this.User.GetUserId();
+            var roomFound = repository.Rooms.Single(x => x.Id == request.RoomId && (x.ReceivingUserId == userId || x.CallingUserId == userId));
+            var rtcRoom = repository.WebRtcRooms.Single(x => x.RoomId == roomFound.Id);
+            repository.WebRtcRooms.Remove(rtcRoom);
+            repository.Rooms.Remove(roomFound);
+
+            await roomsHub.RoomDeleted(roomFound.Id, roomFound.CallingUserId == userId ? roomFound.ReceivingUserId : roomFound.CallingUserId);
+            return new LeaveResponse();
         }
     }
 }

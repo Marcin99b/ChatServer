@@ -52,12 +52,11 @@ namespace ChatServer.WebApi.Hubs
             {
                 return;
             }
-            var rtcRoom = repository.WebRtcRooms.FirstOrDefault(x => x.RoomId == roomFound.Id);
-            if(rtcRoom != null)
-            {
-                repository.WebRtcRooms.Remove(rtcRoom);
-            }
+            var rtcRoom = repository.WebRtcRooms.Single(x => x.RoomId == roomFound.Id);
+            repository.WebRtcRooms.Remove(rtcRoom);
+            
             repository.Rooms.Remove(roomFound);
+            await this.RoomDeleted(roomFound.Id, roomFound.CallingUserId == userId ? roomFound.ReceivingUserId : roomFound.CallingUserId);
         }
 
         public async Task WaitingForCallAccept(Guid callingUser, Guid receiverUser)
@@ -92,6 +91,11 @@ namespace ChatServer.WebApi.Hubs
         public async Task RoomConfiguredByCaller(WebRtcRoom rtcRoom, Guid receivingUserId)
         {
             await Clients.User(receivingUserId.ToString()).SendAsync("RoomConfiguredByCaller", rtcRoom);
+        }
+
+        public async Task RoomDeleted(Guid roomId, Guid anotherUserId)
+        {
+            await Clients.User(anotherUserId.ToString()).SendAsync("RoomDeleted", roomId);
         }
     }
 }
