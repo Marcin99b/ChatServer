@@ -65,6 +65,20 @@ namespace ChatServer.WebApi.Areas.Users
         }
 
         [HttpPost]
+        [AllowAnonymous]
+        public async Task<LogoutResponse> Logout([FromBody] LogoutRequest request)
+        {
+            var token = this.GetCookieValue(AuthConsts.ACCESS_TOKEN_COOKIE);
+            if (!string.IsNullOrWhiteSpace(token))
+            {
+                usersSessionsStorage.RemoveByToken(token);
+            }
+            this.DeleteCookie(AuthConsts.ACCESS_TOKEN_COOKIE);
+            await Task.CompletedTask;
+            return new LogoutResponse();
+        }
+
+        [HttpPost]
         public async Task<GetUsersListResponse> GetUsersList([FromBody] GetUsersListRequest request)
         {
             var currentUser = this.User.GetUserId();

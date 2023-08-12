@@ -11,6 +11,9 @@ namespace ChatServer.WebApi.Areas.Users
     public record LoginRequest(string Username);
     public record LoginResponse();
 
+    public record LogoutRequest();
+    public record LogoutResponse();
+
     public record GetUsersListRequest();
     public record GetUsersListResponse(List<UserRoomDetails> Users);
 
